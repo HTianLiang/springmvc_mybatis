@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                             http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+<!-- 问题：在java代码中设置 了msg但是在jsp页面使用jstl取不出来
+     原因：创建maven工程时，idea自动添加的web.xml中的jsp页面头约束版本太低
+     解决方法：将“一”的代码替换为“二”的代码即可
+    “一”
+     <!DOCTYPE web-app PUBLIC
+             "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+             "http://java.sun.com/dtd/web-app_2_3.dtd" >
+     <web-app>
+     </web-app>
+    “二”
+     <?xml version="1.0" encoding="UTF-8"?>
+     <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+          http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+     </web-app> -->
+
+  <display-name>Archetype Created Web Application</display-name>
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath*:soft/demo/config/applicationContext.xml</param-value>
+  </context-param>
+
+  <!--spring监听器-->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <!--处理POST提交乱码问题-->
+  <filter>
+    <filter-name>encoding</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encoding</filter-name>
+    <url-pattern>*.action</url-pattern>
+  </filter-mapping>
+
+  <!--前端控制器-->
+  <servlet>
+    <servlet-name>springmvc</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <!--默认找/WEB-INF/[servlet的名称]-servlet.xml-->
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath*:soft/demo/config/springmvc.xml</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>springmvc</servlet-name>
+    <!--
+        1. /* 拦截所有 jsp js png css 真全拦截 建议不使用
+        2. *.action *.do 拦截以action do结尾的请求 能使用  ERP...
+        3. / 拦截所有（不包含jsp，但包含 .js .png .css） 强烈建议使用 前台 面向消费者 例：www.jd.com/search /对静态资源放行
+    -->
+    <url-pattern>*.action</url-pattern>
+  </servlet-mapping>
+
+</web-app>
